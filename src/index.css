@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --brand-50: #ffffff;
+  /* Pure White Background */
+  --brand-100: #fafafa;
+  --brand-200: #f5f5f5;
+  --brand-300: #d4d4d4;
+  --brand-400: #a3a3a3;
+  --brand-500: #737373;
+  --brand-600: #525252;
+  --brand-700: #404040;
+  --brand-800: #171717;
+  /* Shifted old 900 down for gradients/borders */
+  --brand-900: #000000;
+  /* Pure Black Text */
+  --accent: #000000;
+}
+
+.dark {
+  --brand-50: #000000;
+  /* Pure Black Background */
+  --brand-100: #121212;
+  --brand-200: #1a1a1a;
+  --brand-300: #262626;
+  --brand-400: #404040;
+  --brand-500: #737373;
+  --brand-600: #a3a3a3;
+  --brand-700: #d4d4d4;
+  --brand-800: #f5f5f5;
+  /* Shifted old 900 down */
+  --brand-900: #ffffff;
+  /* Pure White Text */
+  --accent: #4b6584;
+  /* Muted Blue */
+}
+
+@theme {
+  --font-serif: "Inter", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-accent: var(--accent);
+}
+
+@layer base {
+  body {
+    @apply bg-brand-50 text-brand-900 font-sans antialiased transition-colors duration-300;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-brand-900 font-bold;
+  }
+
+  p,
+  label,
+  input,
+  textarea {
+    /* Changed from text-brand-800 to text-brand-900 for absolute contrast */
+    @apply text-brand-900;
+  }
+}
+
+.glass {
+  @apply bg-brand-50/80 backdrop-blur-sm border border-brand-200;
+}
+
+.card-shadow {
+  /* Replaced comma-separated rgba with modern, space-less syntax to fix Vite crash */
+  @apply shadow-[0_1px_3px_rgb(0_0_0_/_0.05)];
+}
+
+.mono-border {
+  @apply border border-brand-200;
+}
+
+.btn-primary {
+  @apply bg-accent text-white px-6 py-2 rounded-sm hover:opacity-90 transition-all font-medium;
+}
+
+.btn-secondary {
+  @apply bg-transparent text-brand-900 border border-brand-900 px-6 py-2 rounded-sm hover:bg-brand-50 transition-all font-medium;
+}
