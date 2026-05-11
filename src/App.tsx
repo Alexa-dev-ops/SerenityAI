@@ -6,7 +6,8 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer
+  ResponsiveContainer,
+  Legend
 } from 'recharts';
 import { 
   Heart, 
@@ -18,14 +19,18 @@ import {
   Send, 
   ChevronRight, 
   ShieldAlert, 
+  Calendar, 
+  Settings,
   User,
   LogOut,
+  Smile,
+  Frown,
+  Meh,
   Zap,
   CheckCircle2,
   X,
   Moon,
-  Sun,
-  Settings
+  Sun
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
@@ -331,7 +336,7 @@ const Dashboard = ({ moods, journals, risk, user }: { moods: MoodEntry[], journa
 
 const AIChat = ({ token }: { token: string | null }) => {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([
-    { role: "assistant", content: "Hello, I am Serenity. State your current emotional status or request support." }
+    { role: "assistant", content: "System initialized. I am Serenity. State your current emotional status or request support." }
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -384,8 +389,7 @@ const AIChat = ({ token }: { token: string | null }) => {
             )}>
               <div className={cn(
                 "prose prose-sm max-w-none",
-                // FIX FOR MARKDOWN TEXT:
-                m.role === "user" ? "prose-invert [&_p]:text-brand-50" : "prose-brand"
+                m.role === "user" ? "prose-invert" : "prose-brand"
               )}>
                 <ReactMarkdown>
                   {m.content}
@@ -562,12 +566,109 @@ const Journal = ({ onComplete, token }: { onComplete: () => void, token: string 
 };
 
 const Resources = () => {
+  const [selectedResource, setSelectedResource] = useState<any>(null);
+
   const resources = [
-    { title: "Trigger Identification", category: "Education", time: "5 min", icon: Zap },
-    { title: "Neuroplasticity & Habit", category: "Science", time: "8 min", icon: BookOpen },
-    { title: "Somatic Grounding", category: "Practice", time: "10 min", icon: Heart },
-    { title: "Structural Support", category: "Social", time: "6 min", icon: ShieldAlert },
+    { 
+      title: "Trigger Identification", 
+      category: "Education", 
+      time: "5 min", 
+      icon: Zap,
+      content: `
+### Understanding Your Triggers
+Recovery is often about anticipation. Triggers are specific cues—people, places, things, or internal states—that spark an urge to use.
+
+Common Categories:
+1. Environmental: Old bars, driving past a specific neighborhood.
+2. Social: Friends who still use, high-pressure networking events.
+3. Emotional: Stress, loneliness, or even "celebratory" joy.
+
+Strategy: Keep a 'Trigger Log' in your journal. When an urge hits, note the 15 minutes prior. Patterns will emerge.
+      `
+    },
+    { 
+      title: "Neuroplasticity & Habit", 
+      category: "Science", 
+      time: "8 min", 
+      icon: BookOpen,
+      content: `
+### Rewiring Your Brain
+The brain is "plastic," meaning it physically changes based on your behavior. Addiction carves deep neural pathways—think of them as superhighways of habit.
+
+The Good News: By staying sober, those highways begin to "overgrow" with disuse, while new pathways for healthy coping mechanisms strengthen.
+
+Key Fact: It takes roughly 90 days for the brain's dopamine receptors to begin returning to baseline. Patience isn't just a virtue; it's biological necessity.
+      `
+    },
+    { 
+      title: "Somatic Grounding", 
+      category: "Practice", 
+      time: "10 min", 
+      icon: Heart,
+      content: `
+### Anchoring in the Present
+When an urge hits, your nervous system often goes into a "fight or flight" response. Somatic grounding pulls you out of your head and back into your body.
+
+The 5-4-3-2-1 Technique:
+- 5 things you can see (a chair, the sky, a pen).
+- 4 things you can touch (your sleeve, the table).
+- 3 things you can hear (traffic, a fan, your breath).
+- 2 things you can smell.
+- 1 thing you can taste.
+
+This overrides the panic response by flooding the brain with sensory data.
+      `
+    },
+    { 
+      title: "Structural Support", 
+      category: "Social", 
+      time: "6 min", 
+      icon: ShieldAlert,
+      content: `
+### Building Your Safety Net
+Willpower is a finite resource. A "Support Structure" is what carries you when willpower is low.
+
+Core Components:
+- The Anchor: One person you can call at 3 AM who won't judge.
+- The Boundary: Clearly defined "Safe Zones" and "No-Go Zones."
+- The Routine: Consistent sleep, meals, and meetings.
+
+Pro-Tip: Don't wait for a crisis to build your net. Knots are tied when the sea is calm.
+      `
+    },
   ];
+
+  if (selectedResource) {
+    return (
+      <div className="space-y-8 max-w-3xl mx-auto">
+        <button 
+          onClick={() => setSelectedResource(null)}
+          className="flex items-center gap-2 text-brand-400 hover:text-brand-900 transition-colors uppercase text-[10px] font-bold tracking-widest"
+        >
+          <ChevronRight size={16} className="rotate-180" />
+          Back to Resources
+        </button>
+        
+        <header className="border-b border-brand-900 pb-6">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-accent flex items-center justify-center text-white">
+              <selectedResource.icon size={20} />
+            </div>
+            <div>
+              <span className="text-[9px] uppercase tracking-widest font-bold text-brand-400">{selectedResource.category}</span>
+              <h2 className="text-3xl font-bold uppercase tracking-tighter text-brand-900">{selectedResource.title}</h2>
+            </div>
+          </div>
+        </header>
+
+        <div className="prose prose-brand max-w-none prose-lg leading-relaxed text-brand-800 font-serif">
+          <ReactMarkdown>
+            {selectedResource.content}
+          </ReactMarkdown>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-10">
@@ -580,6 +681,7 @@ const Resources = () => {
         {resources.map((r, i) => (
           <motion.div
             key={i}
+            onClick={() => setSelectedResource(r)}
             whileHover={{ x: 5 }}
             className="bg-brand-50 p-8 border border-brand-200 card-shadow flex items-center gap-8 cursor-pointer group"
           >
@@ -770,10 +872,9 @@ const AdminPanel = ({ token }: { token: string | null }) => {
           { label: "Alerts", value: "0", icon: AlertCircle },
         ].map((stat, i) => (
           <div key={i} className="p-6 bg-accent text-white rounded-sm">
-            <stat.icon size={20} className="mb-4 opacity-50 text-white" />
-            {/* FIX FOR ADMIN PANEL TEXT: */}
-            <p className="text-white text-xs uppercase tracking-widest opacity-70">{stat.label}</p>
-            <p className="text-white text-2xl font-bold mt-1">{stat.value}</p>
+            <stat.icon size={20} className="mb-4 opacity-50" />
+            <p className="text-xs uppercase tracking-widest opacity-70">{stat.label}</p>
+            <p className="text-2xl font-bold mt-1">{stat.value}</p>
           </div>
         ))}
       </div>
@@ -920,7 +1021,7 @@ const Auth = ({ onAuthSuccess }: { onAuthSuccess: (token: string, user: UserData
             <Heart className="text-brand-50" size={32} />
           </div>
           <h2 className="text-4xl font-bold tracking-tighter uppercase">{isLogin ? "Welcome Back" : "Join Serenity"}</h2>
-          <p className="text-brand-500 uppercase tracking-widest text-xs font-bold">Sign In</p>
+          <p className="text-brand-500 uppercase tracking-widest text-xs font-bold">Secure Access Protocol</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -960,7 +1061,7 @@ const Auth = ({ onAuthSuccess }: { onAuthSuccess: (token: string, user: UserData
           {error && <p className="text-black text-xs font-bold uppercase tracking-widest text-center">{error}</p>}
 
           <button type="submit" className="w-full py-5 bg-brand-900 text-brand-50 font-bold uppercase tracking-widest hover:bg-brand-800 transition-all">
-            {isLogin ? "Sign In" : "Create Account"}
+            {isLogin ? "Authenticate" : "Initialize Account"}
           </button>
         </form>
 
@@ -1120,8 +1221,7 @@ export default function App() {
               className="fixed top-10 right-10 z-[100] bg-brand-900 text-brand-50 px-6 py-4 rounded-sm shadow-2xl flex items-center gap-3"
             >
               <CheckCircle2 size={18} className="text-brand-50" />
-              {/* FIX FOR NOTIFICATION POPUP TEXT: */}
-              <p className="text-brand-50 text-sm font-medium uppercase tracking-tight">{notification}</p>
+              <p className="text-sm font-medium uppercase tracking-tight">{notification}</p>
             </motion.div>
           )}
         </AnimatePresence>
